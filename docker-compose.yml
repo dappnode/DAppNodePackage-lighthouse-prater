@@ -1,0 +1,40 @@
+version: "3.4"
+services:
+  beacon:
+    image: "beacon.lighthouse.dnp.dappnode.eth:0.1.0"
+    build:
+      context: beacon
+      args:
+        UPSTREAM_VERSION: v2.0.1
+    volumes:
+      - "beacon-data:/root/.lighthouse"
+    ports:
+      - "5052/tcp"
+      - "5053/tcp"
+      - "5054/tcp" # metrics endpoint
+      - "9000"
+    restart: unless-stopped
+    environment:
+      HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
+      CORSDOMAIN: "http://lighthouse.dappnode"
+      CHECKPOINT_SYNC_URL: "http://beacon-chain.prysm-prater.dappnode:4000"
+      EXTRA_OPTS: ""
+  validator:
+    image: "validator.lighthouse.dnp.dappnode.eth:0.1.0"
+    build:
+      context: validator
+      args:
+        UPSTREAM_VERSION: v2.0.1
+    volumes:
+      - "validator-data:/root/.lighthouse"
+    ports:
+      - "5064/tcp" # metrics endpoint
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDR: "http://beacon.lighthouse.dappnode:5052"
+      GRAFFITI: validating_from_DAppNode
+      DEFAULT_VALIDATOR_PUBLIC_KEY: ""
+      EXTRA_OPTS: ""
+volumes:
+  beacon-data: {}
+  validator-data: {}

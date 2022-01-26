@@ -27,11 +27,11 @@ function get_public_keys() {
 #   root_certificate_path: /home/paul/my-certificates/my-remote-signer.pem
 function write_validator_definitions() {
     for PUBLIC_KEY in ${PUBLIC_KEYS}; do
-        echo "enabled: true" >> /root/.lighthouse/validators/validator_definitions.yml
-        echo "voting_public_key: \"${PUBLIC_KEY}\"" >> /root/.lighthouse/validators/validator_definitions.yml
-        echo "type: web3signer" >> /root/.lighthouse/validators/validator_definitions.yml
-        echo "url: \"${HTTP_WEB3PROVIDER}\"" >> /root/.lighthouse/validators/validator_definitions.yml
-        # echo "root_certificate_path: /root/.lighthouse/validators/root_certificates/root_certificate.pem" >> /root/.lighthouse/validators/validator_definitions.yml
+        echo "enabled: true" >> /root/.lighthouse/validators/validator_definitions_${PUBLIC_KEY}.yml
+        echo "voting_public_key: \"${PUBLIC_KEY}\"" >> /root/.lighthouse/validators/validator_definitions_${PUBLIC_KEY}.yml
+        echo "type: web3signer" >> /root/.lighthouse/validators/validator_definitions_${PUBLIC_KEY}.yml
+        echo "url: \"${HTTP_WEB3PROVIDER}\"" >> /root/.lighthouse/validators/validator_definitions_${PUBLIC_KEY}.yml
+        # echo "root_certificate_path: /root/.lighthouse/validators/root_certificates/root_certificate.pem" >> /root/.lighthouse/validators/validator_definitions_${PUBLIC_KEY}.yml
     done
 }
 

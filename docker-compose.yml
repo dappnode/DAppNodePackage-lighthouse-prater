@@ -31,6 +31,7 @@ services:
       - "5064/tcp" # metrics endpoint
     restart: unless-stopped
     environment:
+      HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"
       BEACON_NODE_ADDR: "http://beacon.lighthouse.dappnode:5052"
       GRAFFITI: validating_from_DAppNode
       DEFAULT_VALIDATOR_PUBLIC_KEY: ""

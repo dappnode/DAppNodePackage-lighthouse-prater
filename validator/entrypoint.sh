@@ -3,14 +3,14 @@
 # This script does the following:
 # 1. Fetches the public keys from the web3signer API
 # 2. Checks if the public keys are valid
-# 3. Removes and creates again the validator_definitions.yml file
-# 4. Appends to the validator_definitions.yml file the public keys
-# 5. Starts the validator
+# 3. CUSTOM: create validator_definitions.yml
+#   3.1 Removes and creates again the validator_definitions.yml file
+#   3.2 Appends to the validator_definitions.yml file the public keys
+# 4. Starts the validator
 
 ERROR="[ ERROR ]"
 INFO="[ INFO ]"
 
-PUBLIC_KEYS=""
 VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
 
 # Get public keys from API keymanager:
@@ -30,7 +30,7 @@ function get_public_keys() {
     --retry-delay 2 \
     --retry-max-time 40 \
     "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
-        if PUBLIC_KEYS_PARSED=$(echo ${PUBLIC_KEYS} | jq '.data[].validating_pubkey'); then
+        if PUBLIC_KEYS_PARSED=$(echo ${PUBLIC_KEYS} | jq -r '.data[].validating_pubkey'); then
             echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
         else
             { echo "${ERROR} something wrong happened parsing the public keys"; exit 1; }
@@ -52,7 +52,7 @@ function write_validator_definitions() {
     for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
         [ -z "${PUBLIC_KEY}" ] && { echo "${ERROR} public key is empty"; exit 1; }
         echo "${INFO} adding public key: $PUBLIC_KEY"
-        echo -en "- enabled: true\n  voting_public_key: ${PUBLIC_KEY}\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
+        echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
         cat $VALIDATORS_FILE
     done
 }

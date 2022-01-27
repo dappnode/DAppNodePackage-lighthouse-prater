@@ -24,15 +24,6 @@ fields:
     title: CHECKPOINT_SYNC_URL for fast sync, not working :(
     description: >-
       Check [https://lighthouse-book.sigmaprime.io/checkpoint-sync.html](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html)
-  - id: DEFAULT_VALIDATOR_PUBLIC_KEY
-    target:
-      type: environment
-      name: DEFAULT_VALIDATOR_PUBLIC_KEY
-      service: validator
-    title: Validator public key
-    description: >-
-      Copy/paste a validator public key already configure on the web3signer (only 1 at this moment)
-    required: true
   - id: GRAFFITI
     target:
       type: environment
@@ -51,4 +42,3 @@ fields:
     title: Eth2 Beacon chain
     description: >-
       URL to the Eth2 Prater Beacon chain endpoint (you can set another beacon node url until lighthouse is synced)
-    required: true

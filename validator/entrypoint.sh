@@ -7,25 +7,40 @@
 # 4. Appends to the validator_definitions.yml file the public keys
 # 5. Starts the validator
 
+ERROR="[ ERROR ]"
+INFO="[ INFO ]"
+
 PUBLIC_KEYS=""
 VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
 
 # Get public keys from API keymanager:
-# - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/api/v1/eth2/publicKeys
-# - Returns: string[]
+# - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores
+# - Returns:
+# { "data": [{
+#     "validating_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+#     "derivation_path": "m/12381/3600/0/0/0",
+#     "readonly": true
+#     }]
+# }
 function get_public_keys() {
-    PUBLIC_KEYS=$(curl -X GET \
-        -H "Content-Type: application/json" \
-        --max-time 10 \
-        --retry 5 \
-        --retry-delay 0 \
-        --retry-max-time 40 \
-        "${HTTP_WEB3PROVIDER}/api/v1/eth2/publicKeys") \
-    echo "Found public keys: $PUBLIC_KEYS"
+    if PUBLIC_KEYS=$(curl -s -X GET \
+    -H "Content-Type: application/json" \
+    --max-time 10 \
+    --retry 5 \
+    --retry-delay 2 \
+    --retry-max-time 40 \
+    "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
+        if PUBLIC_KEYS_PARSED=$(echo ${PUBLIC_KEYS} | jq '.data[].validating_pubkey'); then
+            echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
+        else
+            { echo "${ERROR} something wrong happened parsing the public keys"; exit 1; }
+        fi
+    else
+        { echo "${ERROR} web3signer not available"; exit 1; }
+    fi
 }
 
-# Creates the validator_definitions.yml file for each public key
-# - Parameter: string[] publicKeys
+# Creates the validator_definitions.yml which contains all the pubkeys
 # - Docs: https://lighthouse-book.sigmaprime.io/validator-web3signer.html
 # - FORMAT for each new pubkey:
 # - enabled: true
@@ -34,9 +49,11 @@ function get_public_keys() {
 #   url: "https://my-remote-signer.com:1234"
 #   root_certificate_path: /home/paul/my-certificates/my-remote-signer.pem
 function write_validator_definitions() {
-    for PUBLIC_KEY in ${PUBLIC_KEYS}; do
-        echo "Adding public key: $PUBLIC_KEY"
-        echo "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3PROVIDER}\"" >> ${VALIDATORS_FILE}
+    for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
+        [ -z "${PUBLIC_KEY}" ] && { echo "${ERROR} public key is empty"; exit 1; }
+        echo "${INFO} adding public key: $PUBLIC_KEY"
+        echo -en "- enabled: true\n  voting_public_key: ${PUBLIC_KEY}\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
+        cat $VALIDATORS_FILE
     done
 }
 
@@ -48,7 +65,7 @@ function write_validator_definitions() {
 get_public_keys
 
 # Check public keys is not empty
-[ -z "${PUBLIC_KEYS}" ] && { echo "No public keys found in API keymanager endpoint /api/v1/eth2/publicKeys"; exit 1; }
+[ -z "${PUBLIC_KEYS_PARSED}" ] && { echo "${ERROR} no public keys found in API keymanager endpoint /eth/v1/keystores"; exit 1; }
 
 # Remove validator_definitions.yml file
 [ -f "${VALIDATORS_FILE}" ] && rm -rf "${VALIDATORS_FILE}"
@@ -60,6 +77,7 @@ get_public_keys
 # Write validator_definitions.yml files
 write_validator_definitions
 
+echo "${INFO} starting lighthouse"
 exec lighthouse \
     --debug-level $DEBUG_LEVEL \
     --network prater \

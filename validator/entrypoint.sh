@@ -77,6 +77,9 @@ get_public_keys
 # Write validator_definitions.yml files
 write_validator_definitions
 
+echo "${INFO} starting cronjob"
+cron
+
 echo "${INFO} starting lighthouse"
 exec lighthouse \
     --debug-level $DEBUG_LEVEL \

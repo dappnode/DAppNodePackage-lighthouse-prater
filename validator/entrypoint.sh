@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# This script does the following:
+#
 # 1. Fetches the public keys from the web3signer API
 # 2. Checks if the public keys are valid
 # 3. CUSTOM: create validator_definitions.yml
@@ -40,6 +39,16 @@ function get_public_keys() {
     fi
 }
 
+# Writes public keys to file by new line separated
+# creates file if it does not exist
+function write_public_keys() {
+    rm -rf ${PUBLIC_KEYS_FILE}
+    echo "${INFO} writing public keys to file"
+    for key in ${PUBLIC_KEYS_PARSED}; do
+        echo "${key}" >> ${PUBLIC_KEYS_FILE}
+    done
+}
+
 # Creates the validator_definitions.yml which contains all the pubkeys
 # - Docs: https://lighthouse-book.sigmaprime.io/validator-web3signer.html
 # - FORMAT for each new pubkey:
@@ -53,7 +62,6 @@ function write_validator_definitions() {
         [ -z "${PUBLIC_KEY}" ] && { echo "${ERROR} public key is empty"; exit 1; }
         echo "${INFO} adding public key: $PUBLIC_KEY"
         echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
-        cat $VALIDATORS_FILE
     done
 }
 
@@ -76,6 +84,9 @@ get_public_keys
 
 # Write validator_definitions.yml files
 write_validator_definitions
+
+# Write public keys to file
+write_public_keys
 
 echo "${INFO} starting cronjob"
 cron

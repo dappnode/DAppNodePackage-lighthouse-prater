@@ -5,7 +5,7 @@ services:
     build:
       context: beacon
       args:
-        UPSTREAM_VERSION: v2.0.1
+        UPSTREAM_VERSION: v2.1.2
     volumes:
       - "beacon-data:/root/.lighthouse"
     ports:

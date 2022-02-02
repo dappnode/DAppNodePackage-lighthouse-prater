@@ -60,6 +60,8 @@ function compare_public_keys() {
             echo "${WARN} public keys from file and api are different"
             echo "${WARN} killing process to restart"
             kill 1
+        else
+            echo "${INFO} public key ${PUBLIC_KEY_OLD} exists in file"
         fi
     done
 }

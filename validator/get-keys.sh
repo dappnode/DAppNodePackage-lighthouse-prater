@@ -72,5 +72,5 @@ echo "${INFO} starting cronjob"
 get_public_keys
 read_public_keys
 compare_public_keys
-exit 0
 echo "${INFO} finished cronjob"
+exit 0

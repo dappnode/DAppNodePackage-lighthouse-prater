@@ -11,7 +11,6 @@ ERROR="[ ERROR ]"
 INFO="[ INFO ]"
 
 VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
-HTTP_WEB3SIGNER="http://web3signer.web3signer-prater.dappnode:9000"
 
 # Get public keys from API keymanager:
 # - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores

@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   beacon:
-    image: "beacon.lighthouse.dnp.dappnode.eth:0.1.0"
+    image: "beacon.lighthouse-prater.dnp.dappnode.eth:0.1.0"
     build:
       context: beacon
       args:
@@ -20,7 +20,7 @@ services:
       CHECKPOINT_SYNC_URL: "http://beacon-chain.prysm-prater.dappnode:4000"
       EXTRA_OPTS: ""
   validator:
-    image: "validator.lighthouse.dnp.dappnode.eth:0.1.0"
+    image: "validator.lighthouse-prater.dnp.dappnode.eth:0.1.0"
     build:
       context: validator
       args:

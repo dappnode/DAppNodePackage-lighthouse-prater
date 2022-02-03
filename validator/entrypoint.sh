@@ -30,7 +30,11 @@ function get_public_keys() {
     --retry-max-time 40 \
     "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
         if PUBLIC_KEYS_PARSED=$(echo ${PUBLIC_KEYS} | jq -r '.data[].validating_pubkey'); then
-            echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
+            if [ ! -z "$PUBLIC_KEYS_PARSED" ]; then
+                echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
+            else
+                echo "${WARN} no public keys found"
+            fi
         else
             { echo "${ERROR} something wrong happened parsing the public keys"; exit 1; }
         fi
@@ -42,7 +46,6 @@ function get_public_keys() {
 # Writes public keys to file by new line separated
 # creates file if it does not exist
 function write_public_keys() {
-    rm -rf ${PUBLIC_KEYS_FILE}
     echo "${INFO} writing public keys to file"
     for key in ${PUBLIC_KEYS_PARSED}; do
         echo "${key}" >> ${PUBLIC_KEYS_FILE}
@@ -84,6 +87,10 @@ get_public_keys
 
 # Write validator_definitions.yml files
 write_validator_definitions
+
+# Clean file
+rm -rf ${PUBLIC_KEYS_FILE}
+touch ${PUBLIC_KEYS_FILE}
 
 # Write public keys to file
 write_public_keys

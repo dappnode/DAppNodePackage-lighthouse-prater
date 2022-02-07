@@ -1,4 +1,8 @@
-#! /bin/bash
+#!/bin/bash
+
+# Concatenate EXTRA_OPTS string
+[ ! -z "$CHECKPOINT_SYNC_URL" ] && EXTRA_OPTS="${EXTRA_OPTS} --checkpoint-sync-url=${CHECKPOINT_SYNC_URL}"
+
 
 exec lighthouse \
     --debug-level $DEBUG_LEVEL \
@@ -12,6 +16,5 @@ exec lighthouse \
     --port 9000 \
     --metrics \
     --metrics-address 0.0.0.0 \
-    --checkpoint-sync-url $CHECKPOINT_SYNC_URL \
     $EXTRA_OPTS
     

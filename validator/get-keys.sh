@@ -68,7 +68,7 @@ function compare_public_keys() {
     fi
 
     # check public key from file exists in public keys from api
-    if [ ! -z ${PUBLIC_KEYS_OLD} ]; then
+    if [ ! -z "$PUBLIC_KEYS_OLD" ]; then
         for PUBLIC_KEY_OLD in ${PUBLIC_KEYS_OLD[@]}; do
             if [[ ! "${PUBLIC_KEYS_PARSED[*]}" =~ "${PUBLIC_KEY_OLD}" ]]; then
                 echo "${WARN} public keys from file and api are different. Killing process to restart"
@@ -81,7 +81,7 @@ function compare_public_keys() {
     fi
 
     # check public key parsed exists in file
-    if [ ! -z ${PUBLIC_KEYS_PARSED} ]; then
+    if [ ! -z "$PUBLIC_KEYS_PARSED" ]; then
         for PUBLIC_KEY_PARSED in ${PUBLIC_KEYS_PARSED[@]}; do
             if [[ ! "${PUBLIC_KEYS_OLD[*]}" =~ "${PUBLIC_KEY_PARSED}" ]]; then
                 echo "${WARN} public keys from file and api are different. Killing process to restart"

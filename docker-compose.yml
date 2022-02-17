@@ -5,14 +5,14 @@ services:
     build:
       context: beacon
       args:
-        UPSTREAM_VERSION: v2.1.2
+        UPSTREAM_VERSION: v2.1.3
     volumes:
       - "beacon-data:/root/.lighthouse"
     ports:
       - "9000"
     restart: unless-stopped
     environment:
-      BEACON_API_PORT: "3500" # Do not change! standard port 3500 for beacon api
+      BEACON_API_PORT: "3500"
       HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
       CORSDOMAIN: "http://lighthouse.dappnode"
       CHECKPOINT_SYNC_URL: "http://beacon-chain.prysm-prater.dappnode:4000"
@@ -22,7 +22,7 @@ services:
     build:
       context: validator
       args:
-        UPSTREAM_VERSION: v2.0.1
+        UPSTREAM_VERSION: v2.1.3
     volumes:
       - "validator-data:/root/.lighthouse"
       - "validator-public-keys:/root/public-keys"
@@ -30,7 +30,7 @@ services:
     environment:
       PUBLIC_KEYS_FILE: /root/public-keys/public_keys.txt
       HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"
-      BEACON_NODE_ADDR: "http://beacon.lighthouse.dappnode:3500" # Do not change! standard port 3500 for beacon api
+      BEACON_NODE_ADDR: "http://beacon.lighthouse.dappnode:3500"
       GRAFFITI: validating_from_DAppNode
       DEFAULT_VALIDATOR_PUBLIC_KEY: ""
       EXTRA_OPTS: ""

@@ -10,9 +10,7 @@
 ERROR="[ ERROR ]"
 INFO="[ INFO ]"
 
-VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
-
-# Get public keys from API keymanager:
+# Get public keys from API keymanager as an array of strings
 # - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores
 # - Returns:
 # { "data": [{
@@ -43,13 +41,13 @@ function get_public_keys() {
     fi
 }
 
-# Writes public keys to file by new line separated
-# creates file if it does not exist
-function write_public_keys() {
-    echo "${INFO} writing public keys to file"
-    for key in ${PUBLIC_KEYS_PARSED}; do
-        echo "${key}" >> ${PUBLIC_KEYS_FILE}
-    done
+function clean_validator_definitions() {
+    # Remove validator_definitions.yml file
+    [ -f "${VALIDATORS_FILE}" ] && rm -rf "${VALIDATORS_FILE}"
+
+    # Create validators file if not exist
+    [ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
+    [ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
 }
 
 # Creates the validator_definitions.yml which contains all the pubkeys
@@ -73,30 +71,22 @@ function write_validator_definitions() {
 ########
 
 # Get public keys from API keymanager
+echo "${INFO} starting lighthouse"
 get_public_keys
 
 # Check public keys is not empty
 [ -z "${PUBLIC_KEYS_PARSED}" ] && { echo "${ERROR} no public keys found in API keymanager endpoint /eth/v1/keystores"; exit 1; }
 
-# Remove validator_definitions.yml file
-[ -f "${VALIDATORS_FILE}" ] && rm -rf "${VALIDATORS_FILE}"
-
-# Create validators file if not exist
-[ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
-[ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
+# Clean validator_definitions.yml file
+echo "${INFO} cleaning previous validator_definitions.yml"
+clean_validator_definitions
 
 # Write validator_definitions.yml files
+echo "${INFO} writing validator_definitions.yml"
 write_validator_definitions
 
-# Clean file
-rm -rf ${PUBLIC_KEYS_FILE}
-touch ${PUBLIC_KEYS_FILE}
-
-# Write public keys to file
-write_public_keys
-
-echo "${INFO} starting cronjob"
-cron
+echo "${INFO} comparing keys in background"
+./get_new_keys.sh "${HTTP_WEB3SIGNER}" "${PUBLIC_KEYS_PARSED[@]}" & disown
 
 echo "${INFO} starting lighthouse"
 exec lighthouse \
@@ -106,7 +96,6 @@ exec lighthouse \
     --init-slashing-protection \
     --datadir /root/.lighthouse \
     --beacon-nodes $BEACON_NODE_ADDR \
-    # Must used escaped \"$VAR\" to accept spaces: --graffiti=\"$GRAFFITI\"
     --graffiti=\"$GRAFFITI\" \
     --http \
     --http-allow-origin 0.0.0.0 \

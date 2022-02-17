@@ -28,7 +28,7 @@ services:
       - "validator-public-keys:/root/public-keys"
     restart: unless-stopped
     environment:
-      PUBLIC_KEYS_FILE: /root/public-keys/public_keys.txt
+      VALIDATORS_FILE: "/root/.lighthouse/validators/validator_definitions.yml"
       HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"
       BEACON_NODE_ADDR: "http://beacon.lighthouse.dappnode:3500" # Do not change! standard port 3500 for beacon api
       GRAFFITI: validating_from_DAppNode

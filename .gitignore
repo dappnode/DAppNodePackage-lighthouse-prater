@@ -1,2 +1,5 @@
 # DAppNodeSDK release directories
 build_*
+
+# Cronjob code
+validator/cronjob/target

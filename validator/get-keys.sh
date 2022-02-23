@@ -42,7 +42,7 @@ function get_public_keys() {
 function read_old_public_keys() {
     if [ -f ${PUBLIC_KEYS_FILE} ]; then
         echo "${INFO} reading public keys from file"
-        PUBLIC_KEYS_OLD=$(cat ${PUBLIC_KEYS_FILE} | tr '\n' ' ')
+        PUBLIC_KEYS_OLD=($(cat ${PUBLIC_KEYS_FILE} | tr '\n' ' '))
     else
         echo "${WARN} file ${PUBLIC_KEYS_FILE} not found"
         PUBLIC_KEYS_OLD=()
@@ -57,6 +57,8 @@ function compare_public_keys() {
     echo "${DEBUG} comparing public keys"
     echo "${DEBUG} public keys from file: $PUBLIC_KEYS_OLD"
     echo "${DEBUG} public keys from api: $PUBLIC_KEYS_PARSED"
+    echo "${DEBUG} public keys length from file: ${#PUBLIC_KEYS_OLD[@]}"
+    echo "${DEBUG} public keys length from api: ${#PUBLIC_KEYS_PARSED[@]}"
 
     # compare array lentghs
     if [ ${#PUBLIC_KEYS_OLD[@]} -ne ${#PUBLIC_KEYS_PARSED[@]} ]; then
@@ -74,10 +76,10 @@ function compare_public_keys() {
 
     # Compare public keys
     for i in "${PUBLIC_KEYS_OLD[@]}"; do
-        if [[ " ${PUBLIC_KEYS_PARSED[@]} " =~ " ${i} " ]]; then
+        if [[ "${PUBLIC_KEYS_PARSED[@]}" =~ "${i}" ]]; then
             echo "${INFO} public key ${i} found in api"
         else
-            echo "${WARN} public key ${i} not found in api. Killing process to restart"
+            echo "${WARN} public key ${i} from file not found in api. Killing process to restart"
             kill 1
             exit 0
         fi

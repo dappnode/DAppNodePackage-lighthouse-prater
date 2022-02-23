@@ -116,8 +116,6 @@ if [ ! -z "${PUBLIC_KEYS_PARSED}" ]; then
     # Write public keys to file
     echo "${INFO} writing public keys file"
     write_public_keys
-else 
-    echo "${WARN} no public keys found"
 fi
 
 echo "${INFO} starting cronjob"

@@ -8,11 +8,22 @@
 # 4. Starts the validator
 
 ERROR="[ ERROR ]"
+WARN="[ WARN ]"
 INFO="[ INFO ]"
 
-VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
+# Checks the following vars exist or exits:
+# - VALIDATORS_FILE
+# - PUBLIC_KEYS_FILE
+# - HTTP_WEB3SIGNER
+# - BEACON_NODE_ADDR
+function ensure_envs_exist() {
+    [ -z "$VALIDATORS_FILE" ] && echo "$ERROR: VALIDATORS_FILE is not set" && exit 1
+    [ -z "$PUBLIC_KEYS_FILE" ] && echo "$ERROR: PUBLIC_KEYS_FILE is not set" && exit 1
+    [ -z "$HTTP_WEB3SIGNER" ] && echo "$ERROR: HTTP_WEB3SIGNER is not set" && exit 1
+    [ -z "$BEACON_NODE_ADDR" ] && echo "$ERROR: BEACON_NODE_ADDR is not set" && exit 1
+}
 
-# Get public keys from API keymanager:
+# Get public keys from API keymanager: BASH ARRAY OF STRINGS
 # - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores
 # - Returns:
 # { "data": [{
@@ -36,23 +47,32 @@ function get_public_keys() {
                 echo "${WARN} no public keys found"
             fi
         else
-            { echo "${ERROR} something wrong happened parsing the public keys"; exit 1; }
+            echo "${WARN} something wrong happened parsing the public keys"
         fi
     else
-        { echo "${ERROR} web3signer not available"; exit 1; }
+        echo "${WARN} web3signer not available"
     fi
 }
 
-# Writes public keys to file by new line separated
-# creates file if it does not exist
+# Clean old file and writes new public keys file
+# - by new line separated
+# - creates file if it does not exist
 function write_public_keys() {
-    echo "${INFO} writing public keys to file"
-    for key in ${PUBLIC_KEYS_PARSED}; do
-        echo "${key}" >> ${PUBLIC_KEYS_FILE}
+    # Clean file
+    rm -rf ${PUBLIC_KEYS_FILE}
+    touch ${PUBLIC_KEYS_FILE}
+
+    for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
+        if [ ! -z "${PUBLIC_KEY}" ]; then
+            echo "${INFO} adding public key: $PUBLIC_KEY"
+            echo "${PUBLIC_KEY}" >> ${PUBLIC_KEYS_FILE}
+        else
+            echo "${WARN} empty public key"
+        fi
     done
 }
 
-# Creates the validator_definitions.yml which contains all the pubkeys
+# Removes old and creates new validator_definitions.yml which contains all the pubkeys
 # - Docs: https://lighthouse-book.sigmaprime.io/validator-web3signer.html
 # - FORMAT for each new pubkey:
 # - enabled: true
@@ -61,10 +81,20 @@ function write_public_keys() {
 #   url: "https://my-remote-signer.com:1234"
 #   root_certificate_path: /home/paul/my-certificates/my-remote-signer.pem
 function write_validator_definitions() {
+    # Remove validator_definitions.yml file
+    [ -f "${VALIDATORS_FILE}" ] && rm -rf "${VALIDATORS_FILE}"
+
+    # Create validators file if not exist
+    [ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
+    [ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
+
     for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
-        [ -z "${PUBLIC_KEY}" ] && { echo "${ERROR} public key is empty"; exit 1; }
-        echo "${INFO} adding public key: $PUBLIC_KEY"
-        echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
+        if [ ! -z "${PUBLIC_KEY}" ]; then
+            echo "${INFO} adding public key: $PUBLIC_KEY"
+            echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
+        else
+            echo "${WARN} empty public key"
+        fi
     done
 }
 
@@ -72,28 +102,23 @@ function write_validator_definitions() {
 # MAIN #
 ########
 
+# Check if the envs exist
+ensure_envs_exist
+
 # Get public keys from API keymanager
 get_public_keys
 
-# Check public keys is not empty
-[ -z "${PUBLIC_KEYS_PARSED}" ] && { echo "${ERROR} no public keys found in API keymanager endpoint /eth/v1/keystores"; exit 1; }
+if [ ! -z "${PUBLIC_KEYS_PARSED}" ]; then
+    # Write validator_definitions.yml files
+    echo "${INFO} writing validator definitions file"
+    write_validator_definitions
 
-# Remove validator_definitions.yml file
-[ -f "${VALIDATORS_FILE}" ] && rm -rf "${VALIDATORS_FILE}"
-
-# Create validators file if not exist
-[ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
-[ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
-
-# Write validator_definitions.yml files
-write_validator_definitions
-
-# Clean file
-rm -rf ${PUBLIC_KEYS_FILE}
-touch ${PUBLIC_KEYS_FILE}
-
-# Write public keys to file
-write_public_keys
+    # Write public keys to file
+    echo "${INFO} writing public keys file"
+    write_public_keys
+else 
+    echo "${WARN} no public keys found"
+fi
 
 echo "${INFO} starting cronjob"
 cron
@@ -106,7 +131,6 @@ exec lighthouse \
     --init-slashing-protection \
     --datadir /root/.lighthouse \
     --beacon-nodes $BEACON_NODE_ADDR \
-    # Must used escaped \"$VAR\" to accept spaces: --graffiti=\"$GRAFFITI\"
     --graffiti=\"$GRAFFITI\" \
     --http \
     --http-allow-origin 0.0.0.0 \

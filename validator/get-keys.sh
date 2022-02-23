@@ -28,6 +28,7 @@ function get_public_keys() {
                 echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
             else
                 echo "${WARN} no public keys found"
+                PUBLIC_KEYS_PARSED=()
             fi
         else
             { echo "${ERROR} something wrong happened parsing the public keys"; exit 1; }

@@ -131,6 +131,8 @@ exec lighthouse \
     --beacon-nodes $BEACON_NODE_ADDR \
     --graffiti=\"$GRAFFITI\" \
     --http \
-    --http-allow-origin 0.0.0.0 \
+    --http-address 0.0.0.0 \
     --http-port 5062 \
+    --http-allow-origin "*" \
+    --unencrypted-http-transport \
     $EXTRA_OPTS

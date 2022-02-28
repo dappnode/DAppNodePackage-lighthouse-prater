@@ -24,5 +24,12 @@
     "homepage": "https://lighthouse-book.sigmaprime.io",
     "readme": "https://github.com/sigp/lighthouse/blob/stable/README.md"
   },
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "requirements": {
+    "minimumDappnodeVersion": "0.2.52"
+  },
+  "dependencies": {
+    "web3signer-prater.dnp.dappnode.eth": "latest",
+    "goerli-geth.dnp.dappnode.eth": "latest"
+  }
 }

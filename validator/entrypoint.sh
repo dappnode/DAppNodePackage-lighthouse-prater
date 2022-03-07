@@ -33,16 +33,16 @@ function ensure_envs_exist() {
 #     }]
 # }
 function get_public_keys() {
-    if PUBLIC_KEYS=$(curl -s -X GET \
+    # Try for 3 minutes    
+    if PUBLIC_KEYS_API=$(curl -s -X GET \
     -H "Content-Type: application/json" \
-    --max-time 10 \
-    --retry 5 \
-    --retry-delay 2 \
-    --retry-max-time 40 \
+    --retry 60 \
+    --retry-delay 3 \
+    --retry-connrefused \
     "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
-        if PUBLIC_KEYS_PARSED=$(echo ${PUBLIC_KEYS} | jq -r '.data[].validating_pubkey'); then
-            if [ ! -z "$PUBLIC_KEYS_PARSED" ]; then
-                echo "${INFO} found public keys: $PUBLIC_KEYS_PARSED"
+        if PUBLIC_KEYS_API=$(echo ${PUBLIC_KEYS_API} | jq -r '.data[].validating_pubkey'); then
+            if [ ! -z "$PUBLIC_KEYS_API" ]; then
+                echo "${INFO} found public keys: $PUBLIC_KEYS_API"
             else
                 echo "${WARN} no public keys found"
             fi
@@ -51,6 +51,7 @@ function get_public_keys() {
         fi
     else
         echo "${WARN} web3signer not available"
+        
     fi
 }
 
@@ -62,7 +63,8 @@ function write_public_keys() {
     rm -rf ${PUBLIC_KEYS_FILE}
     touch ${PUBLIC_KEYS_FILE}
 
-    for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
+    echo "${INFO} writing public keys to file"
+    for PUBLIC_KEY in ${PUBLIC_KEYS_API}; do
         if [ ! -z "${PUBLIC_KEY}" ]; then
             echo "${INFO} adding public key: $PUBLIC_KEY"
             echo "${PUBLIC_KEY}" >> ${PUBLIC_KEYS_FILE}
@@ -88,7 +90,7 @@ function write_validator_definitions() {
     [ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
     [ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
 
-    for PUBLIC_KEY in ${PUBLIC_KEYS_PARSED}; do
+    for PUBLIC_KEY in ${PUBLIC_KEYS_API}; do
         if [ ! -z "${PUBLIC_KEY}" ]; then
             echo "${INFO} adding public key: $PUBLIC_KEY"
             echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}
@@ -108,7 +110,7 @@ ensure_envs_exist
 # Get public keys from API keymanager
 get_public_keys
 
-if [ ! -z "${PUBLIC_KEYS_PARSED}" ]; then
+if [ ! -z "${PUBLIC_KEYS_API}" ]; then
     # Write validator_definitions.yml files
     echo "${INFO} writing validator definitions file"
     write_validator_definitions

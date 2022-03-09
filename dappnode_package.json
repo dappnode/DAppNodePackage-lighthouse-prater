@@ -26,7 +26,7 @@
   },
   "license": "GPL-3.0",
   "requirements": {
-    "minimumDappnodeVersion": "0.2.52"
+    "minimumDappnodeVersion": "0.2.51"
   },
   "dependencies": {
     "web3signer-prater.dnp.dappnode.eth": "latest",

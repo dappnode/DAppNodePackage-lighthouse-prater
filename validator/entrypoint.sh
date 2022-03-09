@@ -124,7 +124,7 @@ if [ ! -z "${PUBLIC_KEYS_API}" ]; then
 fi
 
 echo "${INFO} starting cronjob"
-cron
+CLIENT_ADDRESS=http://validator.lighthouse-prater.dappnode CLIENT_PORT=9000 NETWORK=prater auto-check-remote-keys
 
 echo "${INFO} starting lighthouse"
 exec lighthouse \

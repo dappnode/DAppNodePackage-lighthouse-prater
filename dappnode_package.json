@@ -7,12 +7,12 @@
   "shortDescription": "Lighthouse is an Ethereum 2.0 client",
   "description": "Lighthouse is an Ethereum 2.0 client that connects to other Ethereum 2.0 clients to form a resilient and decentralized proof-of-stake blockchain.",
   "type": "service",
-  "author": "mgarciate <mgarciate@gmail.com> (https://github.com/mgarciate)",
+  "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
     "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)",
     "mgarciate <mgarciate@gmail.com> (https://github.com/mgarciate)"
   ],
-  "categories": ["Blockchain"],
+  "categories": ["Blockchain", "ETH2.0"],
   "repository": {
     "type": "git",
     "url": "https://github.com/sigp/lighthouse.git"
@@ -21,8 +21,10 @@
     "url": "https://github.com/sigp/lighthouse/issues"
   },
   "links": {
+    "ui": "http://ui.web3signer-prater.dappnode?signer_url=http://web3signer.web3signer-prater.dappnode:9000",
     "homepage": "https://lighthouse-book.sigmaprime.io",
-    "readme": "https://github.com/sigp/lighthouse/blob/stable/README.md"
+    "readme": "https://github.com/sigp/lighthouse/blob/stable/README.md",
+    "docs": "https://lighthouse-book.sigmaprime.io/"
   },
   "license": "GPL-3.0",
   "requirements": {

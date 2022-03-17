@@ -1,29 +1,21 @@
 #!/bin/bash
-#
-# 1. Fetches the public keys from the web3signer API
-# 2. Checks if the public keys are valid
-# 3. CUSTOM: create validator_definitions.yml
-#   3.1 Removes and creates again the validator_definitions.yml file
-#   3.2 Appends to the validator_definitions.yml file the public keys
-# 4. Starts the validator
 
 ERROR="[ ERROR ]"
 WARN="[ WARN ]"
 INFO="[ INFO ]"
 
+CLIENT="lighthouse"
+NETWORK="prater"
+
 # Checks the following vars exist or exits:
-# - VALIDATORS_FILE
-# - PUBLIC_KEYS_FILE
-# - HTTP_WEB3SIGNER
-# - BEACON_NODE_ADDR
 function ensure_envs_exist() {
     [ -z "$VALIDATORS_FILE" ] && echo "$ERROR: VALIDATORS_FILE is not set" && exit 1
     [ -z "$PUBLIC_KEYS_FILE" ] && echo "$ERROR: PUBLIC_KEYS_FILE is not set" && exit 1
     [ -z "$HTTP_WEB3SIGNER" ] && echo "$ERROR: HTTP_WEB3SIGNER is not set" && exit 1
     [ -z "$BEACON_NODE_ADDR" ] && echo "$ERROR: BEACON_NODE_ADDR is not set" && exit 1
+    [ -z "$SUPERVISOR_CONF" ] && echo "$ERROR: SUPERVISOR_CONF is not set" && exit 1
 }
 
-# Get public keys from API keymanager: BASH ARRAY OF STRINGS
 # - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores
 # - Returns:
 # { "data": [{
@@ -34,24 +26,41 @@ function ensure_envs_exist() {
 # }
 function get_public_keys() {
     # Try for 3 minutes    
-    if PUBLIC_KEYS_API=$(curl -s -X GET \
-    -H "Content-Type: application/json" \
-    --retry 60 \
-    --retry-delay 3 \
-    --retry-connrefused \
-    "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
-        if PUBLIC_KEYS_API=$(echo ${PUBLIC_KEYS_API} | jq -r '.data[].validating_pubkey'); then
-            if [ ! -z "$PUBLIC_KEYS_API" ]; then
-                echo "${INFO} found public keys: $PUBLIC_KEYS_API"
-            else
-                echo "${WARN} no public keys found"
-            fi
+    while true; do
+        if WEB3SIGNER_RESPONSE=$(curl -s -w "%{http_code}" -X GET -H "Content-Type: application/json" -H "Host: validator.${CLIENT}-${NETWORK}.dappnode" \
+        --retry 60 --retry-delay 3 --retry-connrefused "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
+
+            HTTP_CODE=${WEB3SIGNER_RESPONSE: -3}
+            CONTENT=$(echo ${WEB3SIGNER_RESPONSE} | head -c-4)
+
+            case ${HTTP_CODE} in
+                200)
+                    PUBLIC_KEYS_API=$(echo ${CONTENT} | jq -r 'try .data[].validating_pubkey')
+                    if [ -z "${PUBLIC_KEYS_API}" ]; then
+                        sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
+                        { echo "${WARN} no public keys found on web3signer"; break; }
+                    else 
+                        sed -i 's/autostart=false/autostart=true/g' $SUPERVISOR_CONF
+                        write_public_keys
+                        { echo "${INFO} found public keys: $PUBLIC_KEYS_API"; break; }
+                    fi
+                    ;;
+                403)
+                    if [[ "${CONTENT}" == *"Host not authorized"* ]]; then
+                        sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
+                        { echo "${WARN} client not authorized to access the web3signer api"; break; }
+                    fi
+                    break
+                    ;;
+                *)
+                    { echo "${ERROR} ${CONTENT} HTTP code ${HTTP_CODE} from ${HTTP_WEB3SIGNER}"; break; }
+                    ;;
+            esac
+            break
         else
-            echo "${WARN} something wrong happened parsing the public keys"
+            { echo "${WARN} web3signer not available"; continue; }
         fi
-    else
-        echo "${WARN} web3signer not available"
-    fi
+    done
 }
 
 function clean_public_keys() {
@@ -107,11 +116,11 @@ function write_validator_definitions() {
 # Check if the envs exist
 ensure_envs_exist
 
-# Get public keys from API keymanager
-get_public_keys
-
 # Clean old public keys
 clean_public_keys
+
+# Get public keys from API keymanager
+get_public_keys
 
 if [ ! -z "${PUBLIC_KEYS_API}" ]; then
     # Write validator_definitions.yml files
@@ -123,21 +132,5 @@ if [ ! -z "${PUBLIC_KEYS_API}" ]; then
     write_public_keys
 fi
 
-echo "${INFO} starting cronjob"
-cron
-
-echo "${INFO} starting lighthouse"
-exec lighthouse \
-    --debug-level $DEBUG_LEVEL \
-    --network prater \
-    validator \
-    --init-slashing-protection \
-    --datadir /root/.lighthouse \
-    --beacon-nodes $BEACON_NODE_ADDR \
-    --graffiti=\"$GRAFFITI\" \
-    --http \
-    --http-address 0.0.0.0 \
-    --http-port 5062 \
-    --http-allow-origin "*" \
-    --unencrypted-http-transport \
-    $EXTRA_OPTS
+# Execute supervisor with current environment!
+exec supervisord -c $SUPERVISOR_CONF

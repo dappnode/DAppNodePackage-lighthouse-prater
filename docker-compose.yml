@@ -23,8 +23,6 @@ services:
       context: validator
       args:
         UPSTREAM_VERSION: v2.1.4
-    volumes:
-      - "validator-data:/root/.lighthouse"
     restart: unless-stopped
     environment:
       VALIDATORS_FILE: /root/.lighthouse/validators/validator_definitions.yml
@@ -36,4 +34,3 @@ services:
       EXTRA_OPTS: ""
 volumes:
   beacon-data: {}
-  validator-data: {}

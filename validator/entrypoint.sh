@@ -1,26 +1,16 @@
 #!/bin/bash
-#
-# 1. Fetches the public keys from the web3signer API
-# 2. Checks if the public keys are valid
-# 3. CUSTOM: create validator_definitions.yml
-#   3.1 Removes and creates again the validator_definitions.yml file
-#   3.2 Appends to the validator_definitions.yml file the public keys
-# 4. Starts the validator
 
 ERROR="[ ERROR ]"
 WARN="[ WARN ]"
 INFO="[ INFO ]"
 
 # Checks the following vars exist or exits:
-# - VALIDATORS_FILE
-# - PUBLIC_KEYS_FILE
-# - HTTP_WEB3SIGNER
-# - BEACON_NODE_ADDR
 function ensure_envs_exist() {
     [ -z "$VALIDATORS_FILE" ] && echo "$ERROR: VALIDATORS_FILE is not set" && exit 1
     [ -z "$PUBLIC_KEYS_FILE" ] && echo "$ERROR: PUBLIC_KEYS_FILE is not set" && exit 1
     [ -z "$HTTP_WEB3SIGNER" ] && echo "$ERROR: HTTP_WEB3SIGNER is not set" && exit 1
     [ -z "$BEACON_NODE_ADDR" ] && echo "$ERROR: BEACON_NODE_ADDR is not set" && exit 1
+    [ -z "$SUPERVISOR_CONF" ] && echo "$ERROR: SUPERVISOR_CONF is not set" && exit 1
 }
 
 # Get public keys from API keymanager: BASH ARRAY OF STRINGS
@@ -34,24 +24,42 @@ function ensure_envs_exist() {
 # }
 function get_public_keys() {
     # Try for 3 minutes    
-    if PUBLIC_KEYS_API=$(curl -s -X GET \
-    -H "Content-Type: application/json" \
-    --retry 60 \
-    --retry-delay 3 \
-    --retry-connrefused \
-    "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
-        if PUBLIC_KEYS_API=$(echo ${PUBLIC_KEYS_API} | jq -r '.data[].validating_pubkey'); then
-            if [ ! -z "$PUBLIC_KEYS_API" ]; then
-                echo "${INFO} found public keys: $PUBLIC_KEYS_API"
+    while true; do
+        if WEB3SIGNER_RESPONSE=$(curl -s -X GET \
+        -H "Content-Type: application/json" \
+        -H "Host: validator.prysm-prater.dappnode" \
+        --retry 60 \
+        --retry-delay 3 \
+        --retry-connrefused \
+        "${HTTP_WEB3SIGNER}/eth/v1/keystores"); then
+            # Check host is not authorized
+            if [ "$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.message')" == *"Host not authorized"* ]; then
+                echo "${WARN} the current client is not authorized to access the web3signer api"
+                sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
+                break
+            fi
+
+            if [ "$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')" == "null" ]; then
+                echo "${WARN} error getting public keys from web3signer"
+                sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
+                break
+            elif [ "$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')" != "null" ]; then
+                PUBLIC_KEYS_COMMA_SEPARATED=$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')
+                if [ -z "${PUBLIC_KEYS_COMMA_SEPARATED}" ]; then
+                    sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
+                    { echo "${WARN} no public keys found on web3signer"; break; }
+                else 
+                    sed -i 's/autostart=false/autostart=true/g' $SUPERVISOR_CONF
+                    write_public_keys
+                    { echo "${INFO} found public keys: $PUBLIC_KEYS_COMMA_SEPARATED"; break; }
+                fi
             else
-                echo "${WARN} no public keys found"
+                { echo "${WARN} something wrong happened parsing the public keys"; break; }
             fi
         else
-            echo "${WARN} something wrong happened parsing the public keys"
+            { echo "${WARN} web3signer not available"; continue; }
         fi
-    else
-        echo "${WARN} web3signer not available"
-    fi
+    done
 }
 
 function clean_public_keys() {
@@ -123,21 +131,5 @@ if [ ! -z "${PUBLIC_KEYS_API}" ]; then
     write_public_keys
 fi
 
-echo "${INFO} starting cronjob"
-cron
-
-echo "${INFO} starting lighthouse"
-exec lighthouse \
-    --debug-level $DEBUG_LEVEL \
-    --network prater \
-    validator \
-    --init-slashing-protection \
-    --datadir /root/.lighthouse \
-    --beacon-nodes $BEACON_NODE_ADDR \
-    --graffiti=\"$GRAFFITI\" \
-    --http \
-    --http-address 0.0.0.0 \
-    --http-port 5062 \
-    --http-allow-origin "*" \
-    --unencrypted-http-transport \
-    $EXTRA_OPTS
+# Execute supervisor with current environment!
+exec supervisord -c $SUPERVISOR_CONF

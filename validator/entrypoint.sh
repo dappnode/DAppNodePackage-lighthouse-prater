@@ -44,14 +44,14 @@ function get_public_keys() {
                 sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
                 break
             elif [ "$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')" != "null" ]; then
-                PUBLIC_KEYS_COMMA_SEPARATED=$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')
-                if [ -z "${PUBLIC_KEYS_COMMA_SEPARATED}" ]; then
+                PUBLIC_KEYS_API=$(echo ${WEB3SIGNER_RESPONSE} | jq -r '.data[].validating_pubkey')
+                if [ -z "${PUBLIC_KEYS_API}" ]; then
                     sed -i 's/autostart=true/autostart=false/g' $SUPERVISOR_CONF
                     { echo "${WARN} no public keys found on web3signer"; break; }
                 else 
                     sed -i 's/autostart=false/autostart=true/g' $SUPERVISOR_CONF
                     write_public_keys
-                    { echo "${INFO} found public keys: $PUBLIC_KEYS_COMMA_SEPARATED"; break; }
+                    { echo "${INFO} found public keys: $PUBLIC_KEYS_API"; break; }
                 fi
             else
                 { echo "${WARN} something wrong happened parsing the public keys"; break; }

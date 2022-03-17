@@ -3,7 +3,7 @@ services:
   beacon:
     image: "beacon.lighthouse-prater.dnp.dappnode.eth:0.1.0"
     build:
-      context: beacon
+      context: beacon-chain
       args:
         UPSTREAM_VERSION: v2.1.4
     volumes:

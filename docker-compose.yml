@@ -15,7 +15,7 @@ services:
       BEACON_API_PORT: "3500"
       HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
       CORSDOMAIN: "http://lighthouse.dappnode"
-      CHECKPOINT_SYNC_URL: "http://beacon-chain.prysm-prater.dappnode:4000"
+      CHECKPOINT_SYNC_URL: ""
       EXTRA_OPTS: ""
   validator:
     image: "validator.lighthouse-prater.dnp.dappnode.eth:0.1.0"

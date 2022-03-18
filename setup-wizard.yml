@@ -17,3 +17,12 @@ fields:
     title: Eth1.x node URL
     description: >-
       URL to the Eth1.x node need for the Beacon chain.
+  - id: CHECKPOINT_SYNC_URL
+    target:
+      type: environment
+      name: CHECKPOINT_SYNC_URL
+      service: beacon-chain
+    title: CHECKPOINT_SYNC_URL for fast sync
+    description: >-
+      Check [https://lighthouse-book.sigmaprime.io/checkpoint-sync.html](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html)
+    required: false

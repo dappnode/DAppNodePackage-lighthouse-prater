@@ -14,6 +14,8 @@ function ensure_envs_exist() {
     [ -z "$HTTP_WEB3SIGNER" ] && echo "$ERROR: HTTP_WEB3SIGNER is not set" && exit 1
     [ -z "$BEACON_NODE_ADDR" ] && echo "$ERROR: BEACON_NODE_ADDR is not set" && exit 1
     [ -z "$SUPERVISOR_CONF" ] && echo "$ERROR: SUPERVISOR_CONF is not set" && exit 1
+    [ -z "$GRAFFITI" ] && echo "$ERROR: GRAFFITI is not set" && exit 1
+    [ ! -z "$GRAFFITI" ] && export EXTRA_OPTS="${EXTRA_OPTS} --graffiti='${GRAFFITI}'" # Concatenate EXTRA_OPTS with existing var, otherwise supervisor will throw error
 }
 
 # - Endpoint: http://web3signer.web3signer-prater.dappnode:9000/eth/v1/keystores

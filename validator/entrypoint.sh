@@ -41,6 +41,12 @@ function get_public_keys() {
                         { echo "${WARN} no public keys found on web3signer"; break; }
                     else 
                         sed -i 's/autostart=false/autostart=true/g' $SUPERVISOR_CONF
+                        # Write validator_definitions.yml files
+                        echo "${INFO} writing validator definitions file"
+                        write_validator_definitions
+
+                        # Write public keys to file
+                        echo "${INFO} writing public keys file"
                         write_public_keys
                         { echo "${INFO} found public keys: $PUBLIC_KEYS_API"; break; }
                     fi
@@ -121,16 +127,6 @@ clean_public_keys
 
 # Get public keys from API keymanager
 get_public_keys
-
-if [ ! -z "${PUBLIC_KEYS_API}" ]; then
-    # Write validator_definitions.yml files
-    echo "${INFO} writing validator definitions file"
-    write_validator_definitions
-
-    # Write public keys to file
-    echo "${INFO} writing public keys file"
-    write_public_keys
-fi
 
 # Execute supervisor with current environment!
 exec supervisord -c $SUPERVISOR_CONF

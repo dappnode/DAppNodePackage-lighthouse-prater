@@ -17,5 +17,7 @@ exec lighthouse \
     --port 9000 \
     --metrics \
     --metrics-address 0.0.0.0 \
+    --metrics-port 8008 \
+    --metrics-allow-origin "*" \
     $EXTRA_OPTS
     

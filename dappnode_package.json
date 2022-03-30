@@ -12,6 +12,11 @@
     "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)",
     "mgarciate <mgarciate@gmail.com> (https://github.com/mgarciate)"
   ],
+  "chain": {
+    "driver": "ethereum",
+    "serviceName": "beacon-chain",
+    "portNumber": 3500
+  },
   "categories": ["Blockchain", "ETH2.0"],
   "repository": {
     "type": "git",

@@ -8,7 +8,7 @@ exec lighthouse \
     --debug-level $DEBUG_LEVEL \
     --network prater \
     beacon_node \
-    --datadir /root/.lighthouse
+    --datadir /root/.lighthouse \
     --eth1 --eth1-endpoints $HTTP_WEB3PROVIDER \
     --http \
     --http-allow-origin "*" \

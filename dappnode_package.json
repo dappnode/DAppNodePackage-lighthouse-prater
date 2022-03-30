@@ -30,6 +30,11 @@
   "requirements": {
     "minimumDappnodeVersion": "0.2.51"
   },
+  "chain": {
+    "driver": "ethereum-beacon-chain",
+    "serviceName": "beacon-chain",
+    "portNumber": 3500
+  },
   "dependencies": {
     "web3signer-prater.dnp.dappnode.eth": "latest",
     "goerli-geth.dnp.dappnode.eth": "latest"

@@ -4,7 +4,7 @@
   "upstreamVersion": "v2.1.5",
   "architectures": ["linux/amd64"],
   "upstreamRepo": "sigp/lighthouse",
-  "shortDescription": "Lighthouse is an Ethereum 2.0 client",
+  "shortDescription": "Lighthouse prater ETH2.0 Beacon chain + validator",
   "description": "Lighthouse is an Ethereum 2.0 client that connects to other Ethereum 2.0 clients to form a resilient and decentralized proof-of-stake blockchain.",
   "type": "service",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",

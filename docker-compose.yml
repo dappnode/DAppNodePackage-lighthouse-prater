@@ -9,10 +9,11 @@ services:
     volumes:
       - "beacon-data:/root/.lighthouse"
     ports:
-      - "9000"
+      - 9000/tcp
+      - 9000/udp
     restart: unless-stopped
     environment:
-      BEACON_API_PORT: "3500"
+      BEACON_API_PORT: 3500
       HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
       CORSDOMAIN: "http://lighthouse.dappnode"
       CHECKPOINT_SYNC_URL: ""

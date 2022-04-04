@@ -127,6 +127,7 @@ function compare_public_keys() {
             if [ ${#PUBLIC_KEYS_API[@]} -gt 0 ]; then
                 echo "${INFO} found public keys in the web3signer"
                 write_public_keys
+                write_validator_definitions
                 echo "${INFO} starting validator"
                 supervisorctl -u dummy -p dummy start validator || { echo "${ERROR} validator could not be started"; exit 1; }
                 exit 0

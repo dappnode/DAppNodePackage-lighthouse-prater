@@ -8,7 +8,7 @@ exec lighthouse \
     --debug-level $DEBUG_LEVEL \
     --network prater \
     beacon_node \
-    --datadir /root/.lighthouse
+    --datadir /root/.lighthouse \
     --eth1 --eth1-endpoints $HTTP_WEB3PROVIDER \
     --http \
     --http-allow-origin "*" \
@@ -17,5 +17,7 @@ exec lighthouse \
     --port 9000 \
     --metrics \
     --metrics-address 0.0.0.0 \
+    --metrics-port 8008 \
+    --metrics-allow-origin "*" \
     $EXTRA_OPTS
     

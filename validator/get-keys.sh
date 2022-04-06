@@ -157,7 +157,7 @@ function write_validator_definitions() {
     [ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
     [ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
 
-    for PUBLIC_KEY in ${PUBLIC_KEYS_API}; do
+    for PUBLIC_KEY in ${PUBLIC_KEYS_API[@]}; do
         if [ ! -z "${PUBLIC_KEY}" ]; then
             echo "${INFO} adding public key: $PUBLIC_KEY"
             echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >> ${VALIDATORS_FILE}

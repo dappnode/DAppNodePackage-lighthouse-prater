@@ -17,12 +17,13 @@ fields:
     title: Eth1.x node URL
     description: >-
       URL to the Eth1.x node need for the Beacon chain.
-  - id: CHECKPOINT_SYNC_URL
+  - id: checkpointSyncUrl
     target:
       type: environment
       name: CHECKPOINT_SYNC_URL
       service: beacon-chain
-    title: CHECKPOINT_SYNC_URL for fast sync
+    title: Checkpoint for fast sync
     description: >-
-      Check [https://lighthouse-book.sigmaprime.io/checkpoint-sync.html](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html)
+      To get Lighthouse up and running in only a few minutes, you can start Lighthouse from a recent finalized checkpoint state rather than syncing from genesis. This is substantially **faster** and consumes **less resources** than syncing from genesis, while still providing all the same features.  Be sure you are using a trusted node for the fast sync. Check [Lighthouse docs](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html).
+      Get your checkpoint sync from [infura](https://infura.io/) (i.e https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@eth2-beacon-prater.infura.io)
     required: false

@@ -12,7 +12,7 @@
     "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)",
     "mgarciate <mgarciate@gmail.com> (https://github.com/mgarciate)"
   ],
-  "categories": ["Blockchain", "ETH2.0"],
+  "categories": ["Blockchain", "ETH2.0", "Prater"],
   "repository": {
     "type": "git",
     "url": "https://github.com/sigp/lighthouse.git"

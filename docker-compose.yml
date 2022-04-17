@@ -5,7 +5,7 @@ services:
     build:
       context: beacon-chain
       args:
-        UPSTREAM_VERSION: v2.2.0
+        UPSTREAM_VERSION: v2.2.1
     volumes:
       - "beacon-data:/root/.lighthouse"
     ports:
@@ -23,7 +23,7 @@ services:
     build:
       context: validator
       args:
-        UPSTREAM_VERSION: v2.2.0
+        UPSTREAM_VERSION: v2.2.1
     restart: unless-stopped
     environment:
       VALIDATORS_FILE: /root/.lighthouse/validators/validator_definitions.yml

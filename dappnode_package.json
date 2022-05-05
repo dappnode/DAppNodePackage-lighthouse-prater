@@ -15,14 +15,14 @@
   "categories": ["Blockchain", "ETH2.0"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sigp/lighthouse.git"
+    "url": "https://github.com/dappnode/DAppNodePackage-lighthouse-prater.git"
   },
   "bugs": {
-    "url": "https://github.com/sigp/lighthouse/issues"
+    "url": "https://github.com/dappnode/DAppNodePackage-lighthouse-prater/issues"
   },
   "links": {
     "ui": "http://ui.web3signer-prater.dappnode?signer_url=http://web3signer.web3signer-prater.dappnode:9000",
-    "homepage": "https://github.com/dappnode/DAppNodePackage-lighthouse-prater#readme",
+    "homepage": "https://lighthouse.sigmaprime.io/",
     "readme": "https://github.com/sigp/lighthouse/blob/stable/README.md",
     "docs": "https://lighthouse-book.sigmaprime.io/"
   },

@@ -27,12 +27,9 @@ services:
     restart: unless-stopped
     environment:
       VALIDATORS_FILE: /root/.lighthouse/validators/validator_definitions.yml
-      PUBLIC_KEYS_FILE: /public_keys.txt
       HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"
       BEACON_NODE_ADDR: "http://beacon-chain.lighthouse-prater.dappnode:3500"
       GRAFFITI: validating_from_DAppNode
-      SUPERVISOR_CONF: /etc/supervisor/conf.d/supervisord.conf
-      DEFAULT_VALIDATOR_PUBLIC_KEY: ""
       EXTRA_OPTS: ""
 volumes:
   beacon-data: {}

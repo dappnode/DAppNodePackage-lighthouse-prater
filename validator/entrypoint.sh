@@ -3,9 +3,9 @@
 CLIENT="lighthouse"
 NETWORK="prater"
 VALIDATOR_PORT=3500
+VALIDATORS_FILE="/root/.lighthouse/validators/validator_definitions.yml"
 WEB3SIGNER_API="http://web3signer.web3signer-${NETWORK}.dappnode:9000"
 
-# Removes old and creates new validator_definitions.yml which contains all the pubkeys
 # - Docs: https://lighthouse-book.sigmaprime.io/validator-web3signer.html
 # - FORMAT for each new pubkey:
 # - enabled: true
@@ -20,7 +20,7 @@ function write_validator_definitions() {
     [ ! -d "/root/.lighthouse/validators" ] && mkdir -p /root/.lighthouse/validators
     [ ! -f "${VALIDATORS_FILE}" ] && touch "${VALIDATORS_FILE}"
 
-    for PUBLIC_KEY in ${PUBLIC_KEYS_WEB3SIGNER}; do
+    for PUBLIC_KEY in "${PUBLIC_KEYS_WEB3SIGNER[@]}"; do
         if [ -n "${PUBLIC_KEY}" ]; then
             echo "${INFO} adding public key: $PUBLIC_KEY"
             echo -en "- enabled: true\n  voting_public_key: \"${PUBLIC_KEY}\"\n  type: web3signer\n  url: \"${HTTP_WEB3SIGNER}\"\n" >>${VALIDATORS_FILE}
@@ -30,14 +30,13 @@ function write_validator_definitions() {
     done
 }
 
-########
-# MAIN #
-########
-
 WEB3SIGNER_RESPONSE=$(curl -s -w "%{http_code}" -X GET -H "Content-Type: application/json" -H "Host: validator.${CLIENT}-${NETWORK}.dappnode" "${WEB3SIGNER_API}/eth/v1/keystores")
 HTTP_CODE=${WEB3SIGNER_RESPONSE: -3}
 CONTENT=$(echo "${WEB3SIGNER_RESPONSE}" | head -c-4)
-if [ "$HTTP_CODE" != "200" ]; then
+
+if [ "${HTTP_CODE}" == "403" ] && [ "${CONTENT}" == "*Host not authorized*" ]; then
+    echo "${CLIENT} is not authorized to access the Web3Signer API. Start without pubkeys"
+elif [ "$HTTP_CODE" != "200" ]; then
     echo "Failed to get keystores from web3signer, HTTP code: ${HTTP_CODE}, content: ${CONTENT}"
 else
     PUBLIC_KEYS_WEB3SIGNER=($(echo "${CONTENT}" | jq -r 'try .data[].validating_pubkey'))
@@ -48,8 +47,8 @@ else
 fi
 
 exec -c lighthouse \
-    --debug-level $DEBUG_LEVEL \
-    --network prater \
+    --debug-level=${DEBUG_LEVEL} \
+    --network=${NETWORK} \
     validator \
     --init-slashing-protection \
     --datadir /root/.lighthouse \

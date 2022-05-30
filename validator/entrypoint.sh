@@ -59,4 +59,8 @@ exec -c lighthouse \
     --http-port ${VALIDATOR_PORT} \
     --http-allow-origin "*" \
     --unencrypted-http-transport \
+    --metrics \
+    --metrics-address 0.0.0.0 \
+    --metrics-port 8008 \
+    --metrics-allow-origin "*" \
     $EXTRA_OPTS

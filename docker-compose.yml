@@ -13,6 +13,7 @@ services:
       - 9000/udp
     restart: unless-stopped
     environment:
+      DEBUG_LEVEL: info
       BEACON_API_PORT: 3500
       HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
       CORSDOMAIN: "http://lighthouse.dappnode"
@@ -26,13 +27,10 @@ services:
         UPSTREAM_VERSION: v2.3.0
     restart: unless-stopped
     environment:
-      VALIDATORS_FILE: /root/.lighthouse/validators/validator_definitions.yml
-      PUBLIC_KEYS_FILE: /public_keys.txt
+      DEBUG_LEVEL: info
       HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"
       BEACON_NODE_ADDR: "http://beacon-chain.lighthouse-prater.dappnode:3500"
       GRAFFITI: validating_from_DAppNode
-      SUPERVISOR_CONF: /etc/supervisor/conf.d/supervisord.conf
-      DEFAULT_VALIDATOR_PUBLIC_KEY: ""
       EXTRA_OPTS: ""
 volumes:
   beacon-data: {}

@@ -12,6 +12,8 @@ services:
       - 9000/tcp
       - 9000/udp
     restart: unless-stopped
+    security_opt:
+      - "seccomp:unconfined"
     environment:
       DEBUG_LEVEL: info
       BEACON_API_PORT: 3500
@@ -26,6 +28,8 @@ services:
       args:
         UPSTREAM_VERSION: v2.3.0
     restart: unless-stopped
+    security_opt:
+      - "seccomp:unconfined"
     environment:
       DEBUG_LEVEL: info
       HTTP_WEB3SIGNER: "http://web3signer.web3signer-prater.dappnode:9000"

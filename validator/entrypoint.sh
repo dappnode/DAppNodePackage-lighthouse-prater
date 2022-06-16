@@ -53,7 +53,7 @@ exec -c lighthouse \
     --init-slashing-protection \
     --datadir /root/.lighthouse \
     --beacon-nodes $BEACON_NODE_ADDR \
-    --graffiti=\"$GRAFFITI\" \
+    --graffiti="$GRAFFITI" \
     --http \
     --http-address 0.0.0.0 \
     --http-port ${VALIDATOR_PORT} \

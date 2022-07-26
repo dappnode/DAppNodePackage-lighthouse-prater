@@ -9,8 +9,8 @@ services:
     volumes:
       - "beacon-data:/root/.lighthouse"
     ports:
-      - 9000/tcp
-      - 9000/udp
+      - "9504:9504/tcp"
+      - "9504:9504/udp"
     restart: unless-stopped
     security_opt:
       - "seccomp:unconfined"

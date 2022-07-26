@@ -13,7 +13,7 @@ exec lighthouse \
     --http-allow-origin "*" \
     --http-address 0.0.0.0 \
     --http-port $BEACON_API_PORT \
-    --port 9000 \
+    --port $P2P_PORT \
     --metrics \
     --metrics-address 0.0.0.0 \
     --metrics-port 8008 \

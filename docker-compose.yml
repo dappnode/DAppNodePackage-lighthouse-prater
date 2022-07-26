@@ -19,6 +19,7 @@ services:
       BEACON_API_PORT: 3500
       HTTP_WEB3PROVIDER: "http://goerli-geth.dappnode:8545"
       CORSDOMAIN: "http://lighthouse.dappnode"
+      P2P_PORT: 9504
       CHECKPOINT_SYNC_URL: ""
       EXTRA_OPTS: ""
   validator:

@@ -8,7 +8,6 @@ exec lighthouse \
     --network prater \
     beacon_node \
     --datadir /root/.lighthouse \
-    --eth1 --eth1-endpoints $HTTP_WEB3PROVIDER \
     --http \
     --http-allow-origin "*" \
     --http-address 0.0.0.0 \
@@ -18,4 +17,8 @@ exec lighthouse \
     --metrics-address 0.0.0.0 \
     --metrics-port 8008 \
     --metrics-allow-origin "*" \
+    --execution-endpoint $HTTP_ENGINE \
+    --execution-jwt "/jwtsecret" \
     $EXTRA_OPTS
+    #--eth1 --eth1-endpoints $HTTP_WEB3PROVIDER \
+

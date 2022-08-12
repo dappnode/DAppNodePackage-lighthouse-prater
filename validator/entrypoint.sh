@@ -50,6 +50,7 @@ exec -c lighthouse \
     --debug-level=${DEBUG_LEVEL} \
     --network=${NETWORK} \
     validator \
+    --enable-doppelganger-protection \
     --init-slashing-protection \
     --datadir /root/.lighthouse \
     --beacon-nodes $BEACON_NODE_ADDR \

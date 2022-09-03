@@ -20,5 +20,4 @@ exec lighthouse \
     --execution-endpoint $HTTP_ENGINE \
     --execution-jwt "/jwtsecret" \
     $EXTRA_OPTS
-    #--eth1 --eth1-endpoints $HTTP_WEB3PROVIDER \
 

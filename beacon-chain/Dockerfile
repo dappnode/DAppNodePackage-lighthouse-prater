@@ -1,5 +1,5 @@
 ARG UPSTREAM_VERSION
-FROM sigp/lighthouse:${UPSTREAM_VERSION}
+FROM sigp/lighthouse:${UPSTREAM_VERSION}-modern
 
 COPY entrypoint.sh entrypoint.sh
 COPY jwtsecret.hex /jwtsecret

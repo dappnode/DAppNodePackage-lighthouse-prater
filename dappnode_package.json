@@ -35,10 +35,11 @@
     "serviceName": "beacon-chain",
     "portNumber": 3500
   },
-  "dependencies": {
-    "web3signer-prater.dnp.dappnode.eth": "latest"
-  },
   "warnings": {
     "onRemove": "Make sure your web3signer does not have this client selected! (Packages > web3signer > config > client)"
-  }
+  },
+  "globalEnvs": [
+    { "envs": ["EXECUTION_CLIENT_PRATER", "MEVBOOST_PRATER"], "services": ["beacon-chain"] },
+    { "envs": ["MEVBOOST_PRATER"], "services": ["validator"] }
+  ]
 }

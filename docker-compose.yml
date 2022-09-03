@@ -17,7 +17,8 @@ services:
     environment:
       DEBUG_LEVEL: info
       BEACON_API_PORT: 3500
-      CORSDOMAIN: "http://lighthouse.dappnode"
+      HTTP_ENGINE: "http://goerli-geth.dappnode:8551"
+      CORSDOMAIN: "http://lighthouse-prater.dappnode"
       P2P_PORT: 9504
       CHECKPOINT_SYNC_URL: ""
       EXTRA_OPTS: ""

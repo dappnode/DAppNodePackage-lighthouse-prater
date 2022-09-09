@@ -8,33 +8,7 @@ fields:
     title: Graffiti
     maxLength: 32
     description: >-
-      Add a string to your proposed blocks, which will be seen on the block explorer
-  - id: HTTP_ENGINE
-    required: true
-    target:
-      type: environment
-      name: HTTP_ENGINE
-      service: beacon-chain
-    title: Execution Client Endpoint
-    description: >-
-      The Consensus Clients (Lighthouse, Nimbus, Prysm, and Teku) require access to an Execution Client to receive the execution payload by using the Engine API of the Execution Client.
-      This endpoint MUST be provided for an Execution Client that is run locally. 
-      IT IS NO LONGER POSSIBLE TO USE INFURA OR ANY OTHER SERVICE PROVIDER AS YOUR EXECUTION CLIENT.
-
-      - Goerli Geth [Install link](http://my.dappnode/#/installer/goerli-geth.dnp.dappnode.eth)
-
-      - Goerli Nethermind [Install link](http://my.dappnode/#/installer/goerli-nethermind.dnp.dappnode.eth)
-
-      - Goerli Erigon [Install link](http://my.dappnode/#/installer/goerli-erigon.dnp.dappnode.eth)
-
-
-      Consensus Clients require access to an Execution Client in order to operate properly.
-      Be sure to only select an Execution Client below that you have already installed.
-    enum:
-      - "http://goerli-geth.dappnode:8551"
-      - "http://nethermind-goerli.dappnode:8551"
-      - "http://goerli-erigon.dappnode:8551"
-      
+      Add a string to your proposed blocks, which will be seen on the block explorer 
   - id: checkpointSyncUrl
     target:
       type: environment

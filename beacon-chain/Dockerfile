@@ -1,12 +1,12 @@
 ARG UPSTREAM_VERSION
 FROM sigp/lighthouse:${UPSTREAM_VERSION}-modern
 
-RUN apt-get update && apt-get install curl --yes
 COPY entrypoint.sh entrypoint.sh
 COPY jwtsecret.hex /jwtsecret
 
-EXPOSE $BEACON_API_PORT
+RUN apt-get update && apt-get install curl --yes && \
+    chmod +x /entrypoint.sh
 
-EXPOSE 9000
+EXPOSE $BEACON_API_PORT
 
 ENTRYPOINT ["/entrypoint.sh"]

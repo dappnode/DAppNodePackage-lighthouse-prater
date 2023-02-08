@@ -8,7 +8,7 @@ fields:
     title: Graffiti
     maxLength: 32
     description: >-
-      Add a string to your proposed blocks, which will be seen on the block explorer
+      Add a string to your proposed blocks, which will be seen on the block explorer 
   - id: checkpointSyncUrl
     target:
       type: environment
@@ -16,8 +16,9 @@ fields:
       service: beacon-chain
     title: Checkpoint for fast sync
     description: >-
-      To get Lighthouse up and running in only a few minutes, you can start Lighthouse from a recent finalized checkpoint state rather than syncing from genesis. This is substantially **faster** and consumes **less resources** than syncing from genesis, while still providing all the same features.  Be sure you are using a trusted node for the fast sync. Check [Lighthouse docs](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html).
-      Get your checkpoint sync from [infura](https://infura.io/) (i.e https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@eth2-beacon-prater.infura.io)
+      To get Lighthouse up and running in only a few minutes, you can start Lighthouse from a recent finalized checkpoint state rather than syncing from genesis. This is substantially **faster** and consumes **less resources** than syncing from genesis, while still providing all the same features. Be sure you are using a trusted node for the fast sync. Check the Check the [Lighthouse docs](https://lighthouse-book.sigmaprime.io/checkpoint-sync.html) for more information.
+      Use the Dappnode Official endpoint `https://checkpoint-sync-prater.dappnode.io` or get your checkpoint sync from [Infura](https://infura.io/) (i.e https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@eth2-beacon-prater.infura.io)
+      *Note - If you are going to provide your own checkpoint sync endpoint, make sure you do not use a slash `/` at the end of the URL.*
     required: false
   - id: feeRecipientAddress
     target:
@@ -26,7 +27,7 @@ fields:
       service: validator
     title: Fee Recipient Address
     description: >-
-      Fee Recipient is a feature that lets you specify a priority fee recipient address on your validator client instance and beacon node. After The Merge, execution clients will begin depositing priority fees into this address whenever your validator client proposes a new block.
+      Fee Recipient is a feature that lets you specify a priority fee recipient address on your validator client instance and beacon node. Make sure this is an address you control. After The Merge, Execution Clients will begin depositing priority fees into this address whenever your validator proposes a new block.
     required: true
     pattern: "^0x[a-fA-F0-9]{40}$"
     patternErrorMessage: Must be a valid address (0x1fd16a...)

@@ -1,11 +1,11 @@
 {
   "name": "lighthouse-prater.dnp.dappnode.eth",
   "version": "0.1.0",
-  "upstreamVersion": "v3.1.0",
+  "upstreamVersion": "v3.4.0",
   "architectures": ["linux/amd64"],
   "upstreamRepo": "sigp/lighthouse",
-  "shortDescription": "Lighthouse prater ETH2.0 Beacon chain + validator",
-  "description": "Lighthouse is an Ethereum 2.0 client that connects to other Ethereum 2.0 clients to form a resilient and decentralized proof-of-stake blockchain.",
+  "shortDescription": "Lighthouse Prater Beacon chain + validator",
+  "description": "Lighthouse is an Ethereum Consensus Layer client that connects to other clients to form a resilient and decentralized proof-of-stake blockchain.",
   "type": "service",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
@@ -28,7 +28,7 @@
   },
   "license": "Apache-2.0",
   "requirements": {
-    "minimumDappnodeVersion": "0.2.51"
+    "minimumDappnodeVersion": "0.2.58"
   },
   "chain": {
     "driver": "ethereum-beacon-chain",
@@ -39,7 +39,13 @@
     "onRemove": "Make sure your web3signer does not have this client selected! (Packages > web3signer > config > client)"
   },
   "globalEnvs": [
-    { "envs": ["EXECUTION_CLIENT_PRATER", "MEVBOOST_PRATER"], "services": ["beacon-chain"] },
-    { "envs": ["MEVBOOST_PRATER"], "services": ["validator"] }
+    {
+      "envs": ["EXECUTION_CLIENT_PRATER", "MEVBOOST_PRATER"],
+      "services": ["beacon-chain"]
+    },
+    {
+      "envs": ["MEVBOOST_PRATER"],
+      "services": ["validator"]
+    }
   ]
 }

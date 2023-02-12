@@ -7,11 +7,11 @@ By downloading, accessing or using this DAppNode Package ("DNP"), you (reference
 ### About DAppNode
 
 DAppNode is Free Open Source Software ("FOSS") aimed at facilitating the use of decentralized technologies. DAppNode is developed by the DAppNode Association, a voluntary association with the purpose of empowering users to participate in decentralized networks and to help such networks become more resilient by promoting the deployment of more nodes.
-The modular structure of the DAppNode FOSS allows for the wrapping of 3rd party software with the intention of facilitating its deployment. In no way we are responsible for the misuse of such software and in no way we warrant its functionalities. We accept no responsibiity for its errors, or for the errors that the wrapping process might have introduced. Any usage of DAppNode and a DNP is strictly at your own risk.
+The modular structure of the DAppNode FOSS allows for the wrapping of 3rd party software with the intention of facilitating its deployment. In no way we are responsible for the misuse of such software and in no way we warrant its functionalities. We accept no responsibiity for its errors, or for the errors that the wrapping process might have introduced. Any usage of DAppNode and/or a DNP is strictly at your own risk.
 
 ### About this DNP
 
-This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode Association in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.
+This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that the DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode Association in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.
 
 This package stores private keys. Neither DAppNode Association nor the developers of this software can have access to your private keys, nor help you recover it if you lose them.
 

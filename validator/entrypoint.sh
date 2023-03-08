@@ -15,6 +15,14 @@ if [ -n "$_DAPPNODE_GLOBAL_MEVBOOST_PRATER" ] && [ "$_DAPPNODE_GLOBAL_MEVBOOST_P
     fi
 fi
 
+# Chek the env FEE_RECIPIENT_PRATER has a valid ethereum address if not set to the null address
+if [ -n "$FEE_RECIPIENT_PRATER" ] && [[ "$FEE_RECIPIENT_PRATER" =~ ^0x[a-fA-F0-9]{40}$ ]]; then
+    FEE_RECIPIENT_ADDRESS="$FEE_RECIPIENT_PRATER"
+else
+    echo "FEE_RECIPIENT_PRATER is not set or is not a valid ethereum address, setting it to the null address"
+    FEE_RECIPIENT_ADDRESS="0x0000000000000000000000000000000000000000"
+fi
+
 #Handle Graffiti Character Limit
 oLang=$LANG oLcAll=$LC_ALL
 LANG=C LC_ALL=C 

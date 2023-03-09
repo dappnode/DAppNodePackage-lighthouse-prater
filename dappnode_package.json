@@ -21,7 +21,7 @@
     "url": "https://github.com/sigp/lighthouse/issues"
   },
   "links": {
-    "ui": "http://brain.web3signer-prater.dappnode?signer_url=http://web3signer.web3signer-prater.dappnode:9000",
+    "ui": "http://brain.web3signer-prater.dappnode/",
     "homepage": "https://github.com/dappnode/DAppNodePackage-lighthouse-prater#readme",
     "readme": "https://github.com/sigp/lighthouse/blob/stable/README.md",
     "docs": "https://lighthouse-book.sigmaprime.io/"

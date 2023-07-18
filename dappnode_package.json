@@ -1,7 +1,7 @@
 {
   "name": "lighthouse-prater.dnp.dappnode.eth",
-  "version": "0.1.18",
-  "upstreamVersion": "v4.2.0",
+  "version": "0.1.19",
+  "upstreamVersion": "v4.3.0",
   "architectures": ["linux/amd64"],
   "upstreamRepo": "sigp/lighthouse",
   "shortDescription": "Lighthouse Prater Beacon chain + validator",
